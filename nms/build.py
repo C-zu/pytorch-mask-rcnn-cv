@@ -1,7 +1,6 @@
 import os
-import torch
-from torch.utils.ffi import create_extension
-
+from setuptools import setup
+from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 
 sources = ['src/nms.c']
 headers = ['src/nms.h']
@@ -20,15 +19,18 @@ print(this_file)
 extra_objects = ['src/cuda/nms_kernel.cu.o']
 extra_objects = [os.path.join(this_file, fname) for fname in extra_objects]
 
-ffi = create_extension(
-    '_ext.nms',
-    headers=headers,
+# Define the CUDA extension module
+extension = CUDAExtension(
+    name='_ext.nms',
     sources=sources,
+    include_dirs=[os.path.join(this_file, 'src')],
     define_macros=defines,
-    relative_to=__file__,
-    with_cuda=with_cuda,
     extra_objects=extra_objects
 )
 
-if __name__ == '__main__':
-    ffi.build()
+# Setup the extension module
+setup(
+    name='nms',
+    ext_modules=[extension],
+    cmdclass={'build_ext': BuildExtension}
+)
