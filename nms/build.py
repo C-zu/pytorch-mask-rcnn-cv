@@ -29,9 +29,10 @@ extension = CUDAExtension(
     extra_objects=extra_objects
 )
 
-# Setup the extension module
-setup(
-    name='nms',
-    ext_modules=[extension],
-    cmdclass={'build_ext': BuildExtension}
-)
+# Setup the extension module using setup function
+if __name__ == '__main__':
+    setup(
+        name='nms',
+        ext_modules=[extension],
+        cmdclass={'build_ext': BuildExtension}
+    )
